@@ -111,7 +111,7 @@ jobs:
       - name: Print tags summary
         run: |
           all_tags="${{ steps.meta.outputs.tags }}"
-          echo -e "### Pushed:\n$(echo $all_tags | jq -Rrsc 'split(" ")[] | "- \(.)\n"')" >> $GITHUB_STEP_SUMMARY
+          echo -e "### Pushed:\n$(echo $all_tags | jq -Rrsc 'split(" ")[] | "- \(.)"')" >> $GITHUB_STEP_SUMMARY
 
       - name: Generate image artifact attestation
         uses: actions/attest-build-provenance@v1
@@ -206,13 +206,12 @@ jobs:
           set -x
           all_tags="${{ steps.meta.outputs.tags }}"
           tags=$(echo $all_tags | jq -Rrsc 'split(" ")[] | "-t \(.) "')
-          #for i in $all_tags; do
-          #  tags+="-t $i "
-          #done
+          
           docker buildx imagetools create $tags ${{ steps.tags.outputs.arm64_tag }} ${{ steps.tags.outputs.amd64_tag }}
           digest="$(docker buildx imagetools inspect $(echo $all_tags | jq -Rrsc 'split(" ") | .[0]') --format '{{json .Manifest}}' | jq -r '.digest')"
+          
           echo "digest=${digest}" >> $GITHUB_OUTPUT
-          echo -e "### Pushed:\n$(echo $all_tags | jq -Rrsc 'split(" ")[] | "- \(.)\n"')" >> $GITHUB_STEP_SUMMARY
+          echo -e "### Pushed:\n$(echo $all_tags | jq -Rrsc 'split(" ")[] | "- \(.)"')" >> $GITHUB_STEP_SUMMARY
 
       - name: Generate image artifact attestation
         uses: actions/attest-build-provenance@v1
