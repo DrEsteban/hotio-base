@@ -198,6 +198,7 @@ jobs:
       - name: Create multi-platform image
         id: create
         run: |
+          set +x
           all_tags="${{ steps.meta.outputs.tags }}"
           tags=""
           for i in $all_tags; do
