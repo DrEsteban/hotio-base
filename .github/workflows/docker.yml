@@ -203,7 +203,7 @@ jobs:
       - name: Create multi-platform image
         id: create
         run: |
-          set +x
+          set -x
           all_tags="${{ steps.meta.outputs.tags }}"
           tags=$(echo $all_tags | jq -Rrsc 'split(" ")[] | "-t \(.) "')
           #for i in $all_tags; do
